@@ -1,28 +1,18 @@
-# Anima
+![airllm_logo](https://github.com/lyogavin/airllm/blob/main/assets/airllm_logo_sm.png?v=3&raw=true)
 
-![Anima Logo](https://github.com/lyogavin/Anima/blob/main/anima_logo.png?raw=true)
+[**Quickstart**](#quickstart) | 
+[**Configurations**](#configurations) | 
+[**MacOS**](#macos) | 
+[**Example notebooks**](#example-python-notebook) | 
+[**FAQ**](#faq)
 
-
-This is the first open source 33B Chinese LLM, we also support DPO alignment training and we have open source 100k context window. The latest update is AirLLM, a library helps you to infer 70B LLM from just single GPU with just 4GB memory.
-
-第一个开源的基于QLoRA的33B中文大语言模型，支持了基于DPO的对齐训练。
-
-我们也开源了100K输入窗口的开源模型Anima100K，基于Llama2，可商用。
-
-最新开源了单卡跑70B模型的AirLLM。
-
-
-*Read this in [English](README_en.md).*
-
-<div align="left">
+**AirLLM** optimizes inference memory usage, allowing 70B large language models to run inference on a single 4GB GPU card. No quantization, distillation, pruning or other model compression techniques that would result in degraded model performance are needed.
 
 <a href="https://github.com/lyogavin/Anima/stargazers">![GitHub Repo stars](https://img.shields.io/github/stars/lyogavin/Anima?style=social)</a>
 [![Downloads](https://static.pepy.tech/personalized-badge/airllm?period=total&units=international_system&left_color=grey&right_color=blue&left_text=downloads)](https://pepy.tech/project/airllm)
 
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/LianjiaTech/BELLE/blob/main/LICENSE)
 [![Generic badge](https://img.shields.io/badge/wechat-Anima-brightgreen?logo=wechat)](https://static.aicompose.cn/static/wecom_barcode.png?t=1671918938)
-[![Generic badge](https://img.shields.io/badge/🤗-Huggingface%20Repo-green.svg)](https://huggingface.co/lyogavin/Anima33B-merged)
-[![Generic badge](https://img.shields.io/badge/🤗-Huggingface%20Repo-green.svg)](https://huggingface.co/lyogavin/Anima-7B-100K)
 [![Discord](https://img.shields.io/discord/1175437549783760896?logo=discord&color=7289da
 )](https://discord.gg/2xffU5sn)
 [![PyPI - AirLLM](https://img.shields.io/pypi/format/airllm?logo=pypi&color=3571a3)
@@ -31,136 +21,301 @@ This is the first open source 33B Chinese LLM, we also support DPO alignment tra
 [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dgavinli%26type%3Dpatrons&style=flat)](https://patreon.com/gavinli)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/lyogavin?logo=GitHub&color=lightgray)](https://github.com/sponsors/lyogavin)
 
-</div>
 
-## 🔄 更新 Updates
+## Updates
 
-[2024/04/20] [AirLLM](https://github.com/lyogavin/Anima/tree/main/air_llm) supports Llama3 natively already. Run Llama3 70B on 4GB single GPU.
+[2024/04/20] AirLLM supports Llama3 natively already. Run Llama3 70B on 4GB single GPU.
 
-AirLLM天然支持Llama3 70B。4GB显存运行Llama3 70B大模型。
+[2023/12/25] v2.8.2: Support MacOS running 70B large language models.
 
-[2024/03/07] Open source: Latte text2video Training - Train your own SORA!
+[2023/12/20] v2.7: Support AirLLMMixtral. 
 
-最接近SORA的开源模型来了！[训练你自己的SORA](https://github.com/lyogavin/train_your_own_sora)
+[2023/12/20] v2.6: Added AutoModel, automatically detect model type, no need to provide model class to initialize model.
 
-[2023/11/17] Open source: AirLLM, inference 70B LLM with 4GB single GPU.
+[2023/12/18] v2.5: added prefetching to overlap the model loading and compute. 10% speed improvement.
 
-开源AirLLM，单卡4GB显存跑70B大模型，无需量化，无需模型压缩
+[2023/12/03] added support of **ChatGLM**, **QWen**, **Baichuan**, **Mistral**, **InternLM**!
 
-[2023/09/06] open source 100K context window Llama2 based LLM
+[2023/12/02] added support for safetensors. Now support all top 10 models in open llm leaderboard.
 
-更新支持100k 上下文的基于Llama2的可商用大模型
+[2023/12/01] airllm 2.0. Support compressions: **3x run time speed up!**
 
-[2023/06/29] Open source alignment training based on DPO+QLORA
+[2023/11/20] airllm Initial verion!
 
-更新基于DPO+QLoRA的Human Feedback训练
+## Table of Contents
 
-[2023/06/12] Open source the first 33B Chinese Large language model
+* [Quick start](#quickstart)
+* [Model Compression](#model-compression---3x-inference-speed-up)
+* [Configurations](#configurations)
+* [Run on MacOS](#macos)
+* [Example notebooks](#example-python-notebook)
+* [Supported Models](#supported-models)
+* [Acknowledgement](#acknowledgement)
+* [FAQ](#faq)
 
-开源了第一个基于QLoRA的中文33B大语言模型
+## Quickstart
 
+### 1. Install package
 
-## AirLLM, inference 70B LLM with 4GB single GPU
+First, install the airllm pip package.
 
-AirLLM optimizes inference memory usage, allowing 70B large language models to run inference on a single 4GB GPU card. No quantization, distillation, pruning or other model compression techniques that would result in degraded model performance are needed.
+```bash
+pip install airllm
+```
 
-AirLLM优化inference内存，4GB单卡GPU可以运行70B大语言模型推理。不需要任何损失模型性能的量化和蒸馏，剪枝等模型压缩。
+### 2. Inference
 
+Then, initialize AirLLMLlama2, pass in the huggingface repo ID of the model being used, or the local path, and inference can be performed similar to a regular transformer model.
 
-Find out more [Here](https://github.com/lyogavin/Anima/tree/main/air_llm)。
+(*You can also specify the path to save the splitted layered model through **layer_shards_saving_path** when init AirLLMLlama2.*
 
-##  Train your own SORA: Open source: Latte text2video Training
+```python
+from airllm import AutoModel
 
-Train your own SORA:
+MAX_LENGTH = 128
+# could use hugging face model repo id:
+model = AutoModel.from_pretrained("garage-bAInd/Platypus2-70B-instruct")
 
-Check out here: [https://github.com/lyogavin/train_your_own_sora](https://github.com/lyogavin/train_your_own_sora)
+# or use model's local path...
+#model = AutoModel.from_pretrained("/home/ubuntu/.cache/huggingface/hub/models--garage-bAInd--Platypus2-70B-instruct/snapshots/b585e74bcaae02e52665d9ac6d23f4d0dbc81a0f")
 
-## 100K context length LLM
+input_text = [
+        'What is the capital of United States?',
+        #'I like',
+    ]
 
-We released the new Anima open source 7B model, supporting an input window length of 100K! It’s based on LLama2, so available for commercial use!
+input_tokens = model.tokenizer(input_text,
+    return_tensors="pt", 
+    return_attention_mask=False, 
+    truncation=True, 
+    max_length=MAX_LENGTH, 
+    padding=False)
+           
+generation_output = model.generate(
+    input_tokens['input_ids'].cuda(), 
+    max_new_tokens=20,
+    use_cache=True,
+    return_dict_in_generate=True)
 
-With specifically curated long text question answering training data for the 100K input length, and a lot of memory optimizations, we enabled the LLama2 model to scale to 100K input length.
+output = model.tokenizer.decode(generation_output.sequences[0])
 
+print(output)
 
-当输入长度支持100k，你甚至可以把整个知识库都放入Prompt交给模型。或者可以把一本书直接放到Prompt里边。再也不用各种费劲的向量化，文本分割。。。。
+```
+ 
+ 
+Note: During inference, the original model will first be decomposed and saved layer-wise. Please ensure there is sufficient disk space in the huggingface cache directory.
+ 
 
-我们堆了各种最新的猛料：[XEntropy](https://github.com/NVIDIA/apex/tree/master/apex/contrib/xentropy)，[Paged 8bit Adamw](https://github.com/TimDettmers/bitsandbytes), [LORA](https://github.com/huggingface/peft), [Flashattention2](https://github.com/Dao-AILab/flash-attention)，并且专门针对长输入对于training和Inference代码都做了修改定制，使得单卡100G就可以训练100k窗口。单卡40G就可以进行推理。
+## Model Compression - 3x Inference Speed Up!
 
-训练数据上，从几十种公开数据集中精选了专门针对长输入的30k～100k长度的长文本训练数据，专门针对100K输入对模型进行了训练。
+We just added model compression based on block-wise quantization-based model compression. Which can further **speed up the inference speed** for up to **3x** , with **almost ignorable accuracy loss!** (see more performance evaluation and why we use block-wise quantization in [this paper](https://arxiv.org/abs/2212.09720))
 
-Find out more [Here](https://github.com/lyogavin/Anima/tree/main/anima_100k)。
+![speed_improvement](https://github.com/lyogavin/Anima/blob/main/assets/airllm2_time_improvement.png?v=2&raw=true)
 
-[![Generic badge](https://img.shields.io/badge/🤗-Huggingface%20Repo-green.svg)](https://huggingface.co/lyogavin/Anima-7B-100K) 
+#### How to enable model compression speed up:
 
+* Step 1. make sure you have [bitsandbytes](https://github.com/TimDettmers/bitsandbytes) installed by `pip install -U bitsandbytes `
+* Step 2. make sure airllm verion later than 2.0.0: `pip install -U airllm` 
+* Step 3. when initialize the model, passing the argument compression ('4bit' or '8bit'):
 
-## Anima 33B Chinese
+```python
+model = AutoModel.from_pretrained("garage-bAInd/Platypus2-70B-instruct",
+                     compression='4bit' # specify '8bit' for 8-bit block-wise quantization 
+                    )
+```
+
+#### What are the differences between model compression and quantization?
+
+Quantization normally needs to quantize both weights and activations to really speed things up. Which makes it harder to maintain accuracy and avoid the impact of outliers in all kinds of inputs.
+
+While in our case the bottleneck is mainly at the disk loading, we only need to make the model loading size smaller. So, we get to only quantize the weights' part, which is easier to ensure the accuracy.
+
+## Configurations
+ 
+When initialize the model, we support the following configurations:
+
+* **compression**: supported options: 4bit, 8bit for 4-bit or 8-bit block-wise quantization, or by default None for no compression
+* **profiling_mode**: supported options: True to output time consumptions or by default False
+* **layer_shards_saving_path**: optionally another path to save the splitted model
+* **hf_token**: huggingface token can be provided here if downloading gated models like: *meta-llama/Llama-2-7b-hf*
+* **prefetching**: prefetching to overlap the model loading and compute. By default, turned on. For now, only AirLLMLlama2 supports this.
+* **delete_original**: if you don't have too much disk space, you can set delete_original to true to delete the original downloaded hugging face model, only keep the transformed one to save half of the disk space. 
 
-We believe the future of AI will be fully open and democratized. AI should be a tool that’s accessible to everyone, instead of only the big monopolies(some of them have the term “open” in their names 😆 .). QLoRA might be an important step towards that future. We want to make some small contribution to the historical process of democratization of AI, we are open sourcing the 33B QLoRA model we trained: all the model parameters, code, datasets and evaluations are opened! 🤗
+## MacOS
 
+Just install airllm and run the code the same as on linux. See more in [Quick Start](#quickstart).
 
-因此我们认为[QLoRA](https://arxiv.org/abs/2305.14314) 的工作很重要，重要到可能是个Game Changer。通过QLoRA的优化方法，第一次让33B规模的模型可以比较民主化的，比较低成本的finetune训练，并且普及使用。我们认为33B模型既可以发挥大规模模型的比较强的reasoning能力，又可以针对私有业务领域数据进行灵活的finetune训练提升对于LLM的控制力。
+* make sure you installed [mlx](https://github.com/ml-explore/mlx?tab=readme-ov-file#installation) and torch
+* you probabaly need to install python native see more [here](https://stackoverflow.com/a/65432861/21230266)
+* only [Apple silicon](https://support.apple.com/en-us/HT211814) is supported
 
-Find out more [Here](https://github.com/lyogavin/Anima/tree/main/training)。
+Example [python notebook] (https://github.com/lyogavin/Anima/blob/main/air_llm/examples/run_on_macos.ipynb)
 
 
-[![Generic badge](https://img.shields.io/badge/🤗-Huggingface%20Repo-green.svg)](https://huggingface.co/lyogavin/Anima33B-merged) 
+## Example Python Notebook
 
+Example colabs here:
 
-## Alignment training based on DPO and QLoRA
+<a target="_blank" href="https://colab.research.google.com/github/lyogavin/Anima/blob/main/air_llm/examples/run_all_types_of_models.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
 
-We open sourced latest alignment techinque - DPO.
+#### example of other models (ChatGLM, QWen, Baichuan, Mistral, etc):
 
-Anima模型又开源了基于QLoRA的最新的DPO技术。
+<details>
 
-DPO是最新的最高效的RLHF训练方法。RLHF一直是生成式AI训练的老大难问题，也被认为是OpenAI的压箱底独家秘笈。DPO技术改变了这一切，让RLHF彻底傻瓜化！
 
-我们开源了RLHF的低成本QLoRA的实现，一台GPU机器就可以训练33B模型的DPO！
+* ChatGLM:
 
-Find out more [here](https://github.com/lyogavin/Anima/tree/main/rlhf)。
+```python
+from airllm import AutoModel
+MAX_LENGTH = 128
+model = AutoModel.from_pretrained("THUDM/chatglm3-6b-base")
+input_text = ['What is the capital of China?',]
+input_tokens = model.tokenizer(input_text,
+    return_tensors="pt", 
+    return_attention_mask=False, 
+    truncation=True, 
+    max_length=MAX_LENGTH, 
+    padding=True)
+generation_output = model.generate(
+    input_tokens['input_ids'].cuda(), 
+    max_new_tokens=5,
+    use_cache= True,
+    return_dict_in_generate=True)
+model.tokenizer.decode(generation_output.sequences[0])
+```
 
-[![Generic badge](https://img.shields.io/badge/🤗-Huggingface%20Repo-green.svg)](https://huggingface.co/lyogavin/Anima33B-DPO-Belle-1k-merged) 
+* QWen:
 
+```python
+from airllm import AutoModel
+MAX_LENGTH = 128
+model = AutoModel.from_pretrained("Qwen/Qwen-7B")
+input_text = ['What is the capital of China?',]
+input_tokens = model.tokenizer(input_text,
+    return_tensors="pt", 
+    return_attention_mask=False, 
+    truncation=True, 
+    max_length=MAX_LENGTH)
+generation_output = model.generate(
+    input_tokens['input_ids'].cuda(), 
+    max_new_tokens=5,
+    use_cache=True,
+    return_dict_in_generate=True)
+model.tokenizer.decode(generation_output.sequences[0])
+```
 
-## Stay Connected with Us
 
-### Wechat 微信公众号
+* Baichuan, InternLM, Mistral, etc:
 
-扫码：
+```python
+from airllm import AutoModel
+MAX_LENGTH = 128
+model = AutoModel.from_pretrained("baichuan-inc/Baichuan2-7B-Base")
+#model = AutoModel.from_pretrained("internlm/internlm-20b")
+#model = AutoModel.from_pretrained("mistralai/Mistral-7B-Instruct-v0.1")
+input_text = ['What is the capital of China?',]
+input_tokens = model.tokenizer(input_text,
+    return_tensors="pt", 
+    return_attention_mask=False, 
+    truncation=True, 
+    max_length=MAX_LENGTH)
+generation_output = model.generate(
+    input_tokens['input_ids'].cuda(), 
+    max_new_tokens=5,
+    use_cache=True,
+    return_dict_in_generate=True)
+model.tokenizer.decode(generation_output.sequences[0])
+```
 
-![group](https://github.com/lyogavin/Anima/blob/main/assets/wechat_pub_account.jpg?raw=true)
 
+</details>
 
-### Wechat group 微信群
 
-扫码进群：
+#### To request other model support: [here](https://docs.google.com/forms/d/e/1FAIpQLSe0Io9ANMT964Zi-OQOq1TJmnvP-G3_ZgQDhP7SatN0IEdbOg/viewform?usp=sf_link)
 
-<img src="https://github.com/lyogavin/Anima/blob/main/assets/wechat_group.png?raw=true" alt="group" style="width:260px;"/>
 
-### Discord
 
-[![Discord](https://img.shields.io/discord/1175437549783760896?logo=discord&color=7289da
-)](https://discord.gg/2xffU5sn)
+## Acknowledgement
 
-### Blog
+A lot of the code are based on SimJeg's great work in the Kaggle exam competition. Big shoutout to SimJeg:
 
-[![Website](https://img.shields.io/website?up_message=blog&url=https%3A%2F%2Fmedium.com%2F%40lyo.gavin&logo=medium&color=black)](https://medium.com/@lyo.gavin)
+[GitHub account @SimJeg](https://github.com/SimJeg), 
+[the code on Kaggle](https://www.kaggle.com/code/simjeg/platypus2-70b-with-wikipedia-rag), 
+[the associated discussion](https://www.kaggle.com/competitions/kaggle-llm-science-exam/discussion/446414).
 
 
-## Contribution 参与贡献
+## FAQ
 
-Buy me a coffee please! 欢迎大家参与贡献本项目 🙏
+### 1. MetadataIncompleteBuffer
 
-**如果你喜欢我们的项目，请帮忙点个⭐吧!**
+safetensors_rust.SafetensorError: Error while deserializing header: MetadataIncompleteBuffer
+
+If you run into this error, most possible cause is you run out of disk space. The process of splitting model is very disk-consuming. See [this](https://huggingface.co/TheBloke/guanaco-65B-GPTQ/discussions/12). You may need to extend your disk space, clear huggingface [.cache](https://huggingface.co/docs/datasets/cache) and rerun. 
+
+### 2. ValueError: max() arg is an empty sequence
+
+Most likely you are loading QWen or ChatGLM model with Llama2 class. Try the following:
+
+For QWen model: 
+
+```python
+from airllm import AutoModel #<----- instead of AirLLMLlama2
+AutoModel.from_pretrained(...)
+```
+
+For ChatGLM model: 
+
+```python
+from airllm import AutoModel #<----- instead of AirLLMLlama2
+AutoModel.from_pretrained(...)
+```
+
+### 3. 401 Client Error....Repo model ... is gated.
+
+Some models are gated models, needs huggingface api token. You can provide hf_token:
+
+```python
+model = AutoModel.from_pretrained("meta-llama/Llama-2-7b-hf", #hf_token='HF_API_TOKEN')
+```
+
+### 4. ValueError: Asking to pad but the tokenizer does not have a padding token.
+
+Some model's tokenizer doesn't have padding token, so you can set a padding token or simply turn the padding config off:
+
+ ```python
+input_tokens = model.tokenizer(input_text,
+    return_tensors="pt", 
+    return_attention_mask=False, 
+    truncation=True, 
+    max_length=MAX_LENGTH, 
+    padding=False  #<-----------   turn off padding 
+)
+```
+
+## Citing AirLLM
+
+If you find
+AirLLM useful in your research and wish to cite it, please use the following
+BibTex entry:
+
+```
+@software{airllm2023,
+  author = {Gavin Li},
+  title = {AirLLM: scaling large language models on low-end commodity computers},
+  url = {https://github.com/lyogavin/Anima/tree/main/air_llm},
+  version = {0.0},
+  year = {2023},
+}
+```
+
+
+## Contribution 
+
+Welcomed contributions, ideas and discussions!
+
+If you find it useful, please ⭐ or buy me a coffee! 🙏
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://bmc.link/lyogavinQ)
-
-
-
-## ✍️ 艾写科技 & Anima AI
-
-This work is from [Anima AI LLC](https://animaai.cloud) and [aiwrite.ai](https://aiwrite.ai).
-
-此工作来自于[艾写科技](https://aiwrite.ai)， [Anima AI](https://animaai.cloud)。
-
-
-
