@@ -24,6 +24,8 @@
 
 
 ## Updates
+[2024/08/20] v2.11.0: Support Qwen2.5
+
 [2024/08/18] v2.10.1 Support CPU inference. Support non sharded models. Thanks @NavodPeiris for the great work! 
 
 [2024/07/30] Support Llama3.1 **405B** ([example notebook](https://colab.research.google.com/github/lyogavin/airllm/blob/main/air_llm/examples/run_llama3.1_405B.ipynb)). Support **8bit/4bit quantization**.
@@ -155,7 +157,7 @@ When initialize the model, we support the following configurations:
 Just install airllm and run the code the same as on linux. See more in [Quick Start](#quickstart).
 
 * make sure you installed [mlx](https://github.com/ml-explore/mlx?tab=readme-ov-file#installation) and torch
-* you probabaly need to install python native see more [here](https://stackoverflow.com/a/65432861/21230266)
+* you probably need to install python native see more [here](https://stackoverflow.com/a/65432861/21230266)
 * only [Apple silicon](https://support.apple.com/en-us/HT211814) is supported
 
 Example [python notebook] (https://github.com/lyogavin/airllm/blob/main/air_llm/examples/run_on_macos.ipynb)
